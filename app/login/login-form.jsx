@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { loginUser } from "@/app/libs/apis/server";
 
 // Client component for CSR
 export default function LoginForm({ title }) {
@@ -10,14 +11,14 @@ export default function LoginForm({ title }) {
   const [passwordError, setPasswordError] = useState("");
 
   const validateForm = () => {
-    if(!email) {
+    if (!email) {
       setEmailError("Email is required!");
       return false;
     } else {
       setEmailError("");
     }
 
-    if(!password) {
+    if (!password) {
       setPasswordError("Password is required!");
       return false;
     } else {
@@ -25,16 +26,18 @@ export default function LoginForm({ title }) {
     }
 
     return true;
-  }
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const isValid = validateForm();
 
-    if(isValid) {
+    if (isValid) {
       // Login Form Data Submission
-      console.log("Form Data:", { email: email, password: password });
+      const login = await loginUser({ email: email, password: password });
+
+      console.log("LOGIN RESPONSE", login);
     }
   };
 
@@ -66,7 +69,9 @@ export default function LoginForm({ title }) {
               placeholder="yourname@email.com"
             />
 
-            {emailError && <div className="text-red-600 text-xs mt-2 ml-1">{emailError}</div>}
+            {emailError && (
+              <div className="text-red-600 text-xs mt-2 ml-1">{emailError}</div>
+            )}
           </div>
 
           {/* password */}
@@ -88,7 +93,11 @@ export default function LoginForm({ title }) {
               placeholder="••••••••"
             />
 
-            {passwordError && <div className="text-red-600 text-xs mt-2 ml-1">{passwordError}</div>}
+            {passwordError && (
+              <div className="text-red-600 text-xs mt-2 ml-1">
+                {passwordError}
+              </div>
+            )}
           </div>
 
           {/* remember me */}
