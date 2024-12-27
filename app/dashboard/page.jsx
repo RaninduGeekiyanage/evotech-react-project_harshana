@@ -1,3 +1,5 @@
+import Image from "next/image";
+import { FaStar } from "react-icons/fa";
 import {
   Card,
   CardContent,
@@ -6,8 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { getMovies } from "../libs/apis/server";
-import Image from "next/image";
 
 export default async function DashboardPage() {
   // 1. Add shadcn Card
@@ -36,7 +38,12 @@ export default async function DashboardPage() {
               <div key={movie?._id} className="h-[480px]">
                 <Card className="h-full">
                   <CardHeader>
-                    <CardTitle>{movie?.title}</CardTitle>
+                    <CardTitle>
+                      {movie?.title}{" "}
+                      <span className="text-xs text-neutral-400 font-normal">
+                        - {movie?.year ?? "N/A"}
+                      </span>
+                    </CardTitle>
                     <CardDescription className="sr-only">
                       {movie?.title}
                     </CardDescription>
@@ -52,7 +59,29 @@ export default async function DashboardPage() {
                         priority={true}
                       />
                     </div>
-                    <p className="line-clamp-3">{movie?.plot}</p>
+                    <div className="flex flex-col justify-between h-[154px]">
+                      {/* Movie Plot */}
+                      <p className="line-clamp-3 text-xs">{movie?.plot}</p>
+                      {/* Movie Genres */}
+                      <div className="text-sm text-blue-900 font-semibold">
+                        {movie?.genres?.length && movie?.genres?.join(" / ")}
+                      </div>
+                      <div className="flex flex-row justify-between items-center">
+                        <Badge variant="success" className="font-medium">
+                          Rated: {movie?.rated ?? "N/A"}
+                        </Badge>
+
+                        <div
+                          className="flex flex-row gap-1 items-center"
+                          title="IMDb Rating"
+                        >
+                          <FaStar className="text-yellow-500" />
+                          <span className="text-sm font-semibold">
+                            {movie?.imdb?.rating ?? 0}/10
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                   <CardFooter className="flex justify-between"></CardFooter>
                 </Card>
