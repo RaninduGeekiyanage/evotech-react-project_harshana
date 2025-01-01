@@ -27,11 +27,15 @@ export const getMovies = async () => {
     }
   } catch (error) {
     if (error) {
-      // Handle HTTP errors specifically
-      const status = error?.response?.status; // HTTP status code (e.g., 404, 500)
-      const responseBody = await error?.response?.json(); // Parse the response body if possible
+      if (error.message === "fetch failed") {
+        return { error: true, message: "Database connection failed!" };
+      } else {
+        // Handle HTTP errors specifically
+        const status = error?.response?.status; // HTTP status code (e.g., 404, 500)
+        const responseBody = await error?.response?.json(); // Parse the response body if possible
 
-      console.log("HTTP Error:", status, responseBody);
+        console.log("HTTP Error:", status, responseBody);
+      }
     } else {
       // Handle non-HTTP errors (e.g., network issues)
       console.log("Unknown error:", error);
