@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { registerUser } from "@/app/libs/apis/server";
 
 const DEFAULT_ERROR = {
   error: false,
@@ -22,26 +24,35 @@ const DEFAULT_ERROR = {
 // Keep this as a client component (functional component)
 export default function RegisterForm() {
   const [error, setError] = useState(DEFAULT_ERROR);
+  const [isLoading, setLoading] = useState(false);
 
   const handleSubmitForm = async (event) => {
     event?.preventDefault();
     const formData = new FormData(event?.currentTarget);
-    const name = formData.get("name") ?? "";
-    const email = formData.get("email") ?? "";
+    const name = formData.get("name").toString();
+    const email = formData.get("email").toString();
     const password = formData.get("password") ?? "";
     const confirmPassword = formData.get("confirm-password") ?? "";
 
     // console.log("Sumbitted!", { name, email, password, confirmPassword });
 
-    if (name && email && password && confirmPassword) {
-      if (password === confirmPassword) {
-        setError(DEFAULT_ERROR);
-      } else {
-        setError({ error: true, message: "Passwords doesn't match" });
-      }
-    }
+    // Basic frontend validation logic
+    // if (name && email && password && confirmPassword) {
+    if (password === confirmPassword) {
+      setError(DEFAULT_ERROR);
+      setLoading(true);
+      const registerResp = await registerUser({ name, email, password });
+      setLoading(false);
 
-    console.log("Error!", error);
+      if (registerResp?.error) {
+        setError({ error: true, message: registerResp.error });
+      }
+    } else {
+      setError({ error: true, message: "Passwords doesn't match" });
+    }
+    // }
+
+    // console.log("Error!", error);
   };
 
   return (
@@ -110,7 +121,8 @@ export default function RegisterForm() {
           </CardContent>
 
           <CardFooter className="flex justify-center">
-            <Button className="flex-1" type="submit">
+            <Button className="flex-1" type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="animate-spin" />}
               Register
             </Button>
           </CardFooter>
