@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { loginUser } from "@/app/libs/apis/server";
+import { loginUser } from "@/lib/apis/server";
 
 // Client component for CSR
 export default function LoginForm({ title }) {

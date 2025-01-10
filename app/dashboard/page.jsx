@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getMovies } from "../libs/apis/server";
+import { getMovies } from "@/lib/apis/server";
 
 export default async function DashboardPage() {
   // 1. Add shadcn Card
